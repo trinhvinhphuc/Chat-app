@@ -119,10 +119,8 @@
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = false;
             // 
-            // Form1
+            // Server
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(249, 533);
             this.Controls.Add(this.rtbDialog);
@@ -133,8 +131,8 @@
             this.Controls.Add(this.txtIP);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+            this.Name = "Server";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Server";
             this.ResumeLayout(false);
             this.PerformLayout();

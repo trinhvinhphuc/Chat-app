@@ -252,9 +252,9 @@
             this.label11.ForeColor = System.Drawing.Color.Maroon;
             this.label11.Location = new System.Drawing.Point(46, 15);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(269, 43);
+            this.label11.Size = new System.Drawing.Size(264, 43);
             this.label11.TabIndex = 20;
-            this.label11.Text = "Server Chat-app";
+            this.label11.Text = "Client Chat-app";
             // 
             // Signin
             // 
@@ -282,6 +282,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label1);
             this.Name = "Signin";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Signin";
             this.ResumeLayout(false);
             this.PerformLayout();
