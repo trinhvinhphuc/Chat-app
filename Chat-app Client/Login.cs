@@ -36,45 +36,49 @@ namespace Chat_app_Client
 
         private void waitForLoginFeedback()
         {
-            try
+            while (active && server != null)
             {
-                while (server != null)
-                {
-                    byte[] data = new byte[1024];
-                    int recv = server.Receive(data);
-                    if (recv == 0) continue;
-                    String feedbackJson = Encoding.ASCII.GetString(data, 0, recv);
-                    Json? feedback = JsonSerializer.Deserialize<Json?>(feedbackJson);
+                byte[] data = new byte[1024];
+                int recv = 0;
 
-                    if (feedback != null)
+                try
+                {
+                    recv = server.Receive(data);
+                }
+                catch
+                {
+                    active = false;
+                    this.Close();
+                }
+                if (recv == 0) continue;
+
+                String feedbackJson = Encoding.ASCII.GetString(data, 0, recv);
+                Json? feedback = JsonSerializer.Deserialize<Json?>(feedbackJson);
+
+                if (feedback != null)
+                {
+                    switch (feedback.type)
                     {
-                        switch (feedback.type)
-                        {
-                            case "LOGIN_FEEDBACK":
-                                if (feedback.content == "TRUE")
-                                {
-                                    MessageBox.Show("Login successes!!", "Notification");
-                                    
-                                    this.Invoke((MethodInvoker)delegate () {
-                                        form = new ChatBox();
-                                        form.Show();
-                                    });
-                                    this.Invoke(new MethodInvoker(this.Hide));
-                                    break;
-                                }
-                                if (feedback.content == "FALSE")
-                                {
-                                    MessageBox.Show("Login failed!!", "Notification");
-                                }
+                        case "LOGIN_FEEDBACK":
+                            if (feedback.content == "TRUE")
+                            {
+                                //MessageBox.Show("Login successes!!", "Notification");
+
+                                //this.Invoke((MethodInvoker)delegate () {
+                                    Application.Run(new ChatBox(server, txtLoginUsername.Text));
+                                //});
+                                //this.Invoke(new MethodInvoker(this.Close));
+                                this.Close();
                                 break;
-                        }
+                            }
+                            if (feedback.content == "FALSE")
+                            {
+                                MessageBox.Show("Login failed!!", "Notification");
+                            }
+                            break;
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }            
+            }          
         }
 
         private void sendJson(Json json, Socket server)
@@ -90,7 +94,7 @@ namespace Chat_app_Client
         {
             form = new Signin();
             form.Show();
-            this.Hide();
+            this.Close();
         }
     }
 }

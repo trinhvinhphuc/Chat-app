@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Chat_app_Server
 {
@@ -132,7 +133,7 @@ namespace Chat_app_Server
                 AppendRichTextBox(account.userName + " logged in!");
 
                 CLIENT.Add(account.userName, client);
-                //clientService(client);
+                clientService(client);
             }
             else
             {
@@ -140,6 +141,59 @@ namespace Chat_app_Server
                 sendJson(notification, client);
                 AppendRichTextBox(account.userName + " can not login!");
             }
+        }
+
+        private void clientService(Socket client)
+        {
+            bool threadActive = true;
+            Thread clientThread = new Thread(() =>
+            {
+                while (threadActive && client != null)
+                {
+                    try
+                    {
+                        byte[] data = new byte[1024];
+                        int recv = client.Receive(data);
+                        if (recv == 0) continue;
+                        String s = Encoding.ASCII.GetString(data, 0, recv);
+                        Json infoJson = JsonSerializer.Deserialize<Json>(s);
+
+                        switch (infoJson.type)
+                        {
+                            case "STARTUP":
+                                if (infoJson.content != null)
+                                {
+                                    List<String> onlUser = new List<string>(CLIENT.Keys);
+                                    onlUser.Remove(infoJson.content);
+
+                                    List<String> group = new List<string>();
+                                    foreach(String key in GROUP.Keys)
+                                    {
+                                        if (GROUP[key].Contains(infoJson.content))
+                                        {
+                                            group.Add(key);
+                                        }
+                                    }
+
+                                    string jsonUser = JsonSerializer.Serialize<List<String>>(onlUser);
+                                    string jsonGroup = JsonSerializer.Serialize<List<String>>(group);
+
+                                    Startup startup = new Startup(jsonUser, jsonGroup);
+                                    String startupJson = JsonSerializer.Serialize(startup);
+                                    Json json = new Json("STARTUP_FEEDBACK", startupJson);
+                                    sendJson(json, client);
+                                }
+                                break;
+                        }
+                    }
+                    catch
+                    {
+                        threadActive = false;
+                    }                   
+                }
+            });
+            clientThread.Start();
+            clientThread.IsBackground = true;
         }
 
         private void sendJson(Json json, Socket server)
@@ -159,6 +213,7 @@ namespace Chat_app_Server
                 return;
             }
             rtbDialog.AppendText(value);
+            rtbDialog.AppendText(Environment.NewLine);
         }
 
         private void changeButtonEnable(Button btn, bool enable)
