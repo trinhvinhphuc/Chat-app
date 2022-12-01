@@ -62,12 +62,10 @@ namespace Chat_app_Client
                         case "LOGIN_FEEDBACK":
                             if (feedback.content == "TRUE")
                             {
-                                //MessageBox.Show("Login successes!!", "Notification");
-
                                 //this.Invoke((MethodInvoker)delegate () {
-                                    Application.Run(new ChatBox(server, txtLoginUsername.Text));
                                 //});
                                 //this.Invoke(new MethodInvoker(this.Close));
+                                Application.Run(new ChatBox(server, txtLoginUsername.Text));
                                 this.Close();
                                 break;
                             }

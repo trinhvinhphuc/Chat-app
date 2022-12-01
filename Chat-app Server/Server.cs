@@ -65,7 +65,8 @@ namespace Chat_app_Server
                     char u = (Char)('A' + 3 * i + j);
                     groupUser.Add(u.ToString());
                 }
-                GROUP.Add("Group" + i.ToString(), groupUser);
+                groupUser.Add("A");
+                GROUP.Add("Group " + i.ToString(), groupUser);
             }
         }
 

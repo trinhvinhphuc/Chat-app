@@ -52,11 +52,17 @@ namespace Chat_app_Client
                         case "STARTUP_FEEDBACK":
                             AppendRichTextBox(infoJson.content);
                             Startup startup = JsonSerializer.Deserialize<Startup>(infoJson.content);
+
                             List<string> groups = JsonSerializer.Deserialize<List<String>>(startup.group);
                             foreach(String group in groups)
                             {
-                                //tblGroup.Rows.Add(new string[] {group});
                                 addDataInDataGridView(tblGroup, new string[] { group });
+                            }
+
+                            List<string> users = JsonSerializer.Deserialize<List<String>>(startup.onlUser);
+                            foreach (String user in users)
+                            {
+                                addDataInDataGridView(tblGroup, new string[] { user });
                             }
                             break;
                     }
@@ -92,6 +98,11 @@ namespace Chat_app_Client
         private void addDataInDataGridView(DataGridView dataGridView, String[] array)
         {
             dataGridView.Invoke(new Action(() => { dataGridView.Rows.Add(array); }));
+        }
+
+        private void tblGroup_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            txtReceiver.Text = tblGroup.Rows[e.RowIndex].Cells[0].Value.ToString();
         }
     }
 }

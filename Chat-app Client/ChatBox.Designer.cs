@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.tblUser = new System.Windows.Forms.DataGridView();
+            this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tblGroup = new System.Windows.Forms.DataGridView();
+            this.Group = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rtbDialog = new System.Windows.Forms.RichTextBox();
             this.btnPicture = new System.Windows.Forms.PictureBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.PictureBox();
             this.lblWelcome = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.txtReceiver = new System.Windows.Forms.TextBox();
             this.btnCreateGroup = new System.Windows.Forms.Button();
-            this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Group = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.tblUser)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tblGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnPicture)).BeginInit();
@@ -57,6 +57,11 @@
             this.tblUser.Size = new System.Drawing.Size(152, 201);
             this.tblUser.TabIndex = 0;
             // 
+            // Online
+            // 
+            this.Online.HeaderText = "Online";
+            this.Online.Name = "Online";
+            // 
             // tblGroup
             // 
             this.tblGroup.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -67,6 +72,13 @@
             this.tblGroup.RowTemplate.Height = 25;
             this.tblGroup.Size = new System.Drawing.Size(152, 201);
             this.tblGroup.TabIndex = 0;
+            this.tblGroup.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tblGroup_CellContentClick);
+            // 
+            // Group
+            // 
+            this.Group.HeaderText = "Group";
+            this.Group.Name = "Group";
+            this.Group.Width = 150;
             // 
             // rtbDialog
             // 
@@ -118,21 +130,10 @@
             this.lblWelcome.TabIndex = 4;
             this.lblWelcome.Text = "Welcome, ...";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Times New Roman", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(576, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 22);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Sending to";
-            // 
             // txtReceiver
             // 
             this.txtReceiver.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtReceiver.Location = new System.Drawing.Point(677, 6);
+            this.txtReceiver.Location = new System.Drawing.Point(179, 7);
             this.txtReceiver.Name = "txtReceiver";
             this.txtReceiver.Size = new System.Drawing.Size(111, 29);
             this.txtReceiver.TabIndex = 3;
@@ -150,23 +151,26 @@
             this.btnCreateGroup.Text = "Create Group";
             this.btnCreateGroup.UseVisualStyleBackColor = false;
             // 
-            // Online
+            // button1
             // 
-            this.Online.HeaderText = "Online";
-            this.Online.Name = "Online";
-            // 
-            // Group
-            // 
-            this.Group.HeaderText = "Group";
-            this.Group.Name = "Group";
+            this.button1.BackColor = System.Drawing.Color.DarkRed;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.button1.ForeColor = System.Drawing.Color.LightCoral;
+            this.button1.Location = new System.Drawing.Point(701, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 29);
+            this.button1.TabIndex = 29;
+            this.button1.Text = "Logout";
+            this.button1.UseVisualStyleBackColor = false;
             // 
             // ChatBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 497);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnCreateGroup);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblWelcome);
             this.Controls.Add(this.txtReceiver);
             this.Controls.Add(this.txtMessage);
@@ -196,10 +200,10 @@
         private TextBox txtMessage;
         private PictureBox btnSend;
         private Label lblWelcome;
-        private Label label1;
         private TextBox txtReceiver;
         private Button btnCreateGroup;
         private DataGridViewTextBoxColumn Online;
         private DataGridViewTextBoxColumn Group;
+        private Button button1;
     }
 }
