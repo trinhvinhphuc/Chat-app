@@ -59,19 +59,22 @@
             this.btnLogin.Location = new System.Drawing.Point(23, 352);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(324, 46);
-            this.btnLogin.TabIndex = 48;
+            this.btnLogin.TabIndex = 3;
             this.btnLogin.Text = "Login";
             this.btnLogin.UseVisualStyleBackColor = false;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // lblSignin
             // 
             this.lblSignin.AutoSize = true;
+            this.lblSignin.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSignin.Font = new System.Drawing.Font("Times New Roman", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
             this.lblSignin.Location = new System.Drawing.Point(88, 415);
             this.lblSignin.Name = "lblSignin";
             this.lblSignin.Size = new System.Drawing.Size(195, 21);
-            this.lblSignin.TabIndex = 41;
+            this.lblSignin.TabIndex = 4;
             this.lblSignin.Text = "Don’t have an account?";
+            this.lblSignin.Click += new System.EventHandler(this.lblSignin_Click);
             // 
             // label7
             // 
@@ -85,12 +88,11 @@
             // 
             // txtLoginPassword
             // 
-            this.txtLoginPassword.Enabled = false;
             this.txtLoginPassword.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtLoginPassword.Location = new System.Drawing.Point(23, 290);
             this.txtLoginPassword.Name = "txtLoginPassword";
             this.txtLoginPassword.Size = new System.Drawing.Size(324, 35);
-            this.txtLoginPassword.TabIndex = 45;
+            this.txtLoginPassword.TabIndex = 2;
             this.txtLoginPassword.UseSystemPasswordChar = true;
             // 
             // label8
@@ -105,21 +107,19 @@
             // 
             // txtLoginUsername
             // 
-            this.txtLoginUsername.Enabled = false;
             this.txtLoginUsername.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtLoginUsername.Location = new System.Drawing.Point(23, 211);
             this.txtLoginUsername.Name = "txtLoginUsername";
             this.txtLoginUsername.Size = new System.Drawing.Size(324, 35);
-            this.txtLoginUsername.TabIndex = 46;
+            this.txtLoginUsername.TabIndex = 1;
             // 
             // txtLoginIP
             // 
-            this.txtLoginIP.Enabled = false;
             this.txtLoginIP.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtLoginIP.Location = new System.Drawing.Point(23, 132);
             this.txtLoginIP.Name = "txtLoginIP";
             this.txtLoginIP.Size = new System.Drawing.Size(324, 35);
-            this.txtLoginIP.TabIndex = 47;
+            this.txtLoginIP.TabIndex = 0;
             // 
             // label9
             // 
@@ -162,7 +162,7 @@
             this.btnStart.Location = new System.Drawing.Point(23, 356);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(324, 36);
-            this.btnStart.TabIndex = 38;
+            this.btnStart.TabIndex = 3;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = false;
             // 
@@ -193,7 +193,7 @@
             this.textBox2.Location = new System.Drawing.Point(23, 290);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(324, 35);
-            this.textBox2.TabIndex = 35;
+            this.textBox2.TabIndex = 8;
             this.textBox2.UseSystemPasswordChar = true;
             // 
             // label3
@@ -213,7 +213,7 @@
             this.textBox1.Location = new System.Drawing.Point(23, 211);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(324, 35);
-            this.textBox1.TabIndex = 36;
+            this.textBox1.TabIndex = 7;
             // 
             // txtIP
             // 
@@ -222,7 +222,7 @@
             this.txtIP.Location = new System.Drawing.Point(23, 132);
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(324, 35);
-            this.txtIP.TabIndex = 37;
+            this.txtIP.TabIndex = 6;
             // 
             // label2
             // 

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Communicator
+﻿namespace Communicator
 {
-    internal class Group
+    public class Group
     {
         public String name { get; set; }
         public String members { get; set; }

@@ -1,10 +1,18 @@
+using Communicator;
+using Microsoft.VisualBasic.ApplicationServices;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Forms;
 
 namespace Chat_app_Server
 {
     public partial class Server : Form
     {
+        private bool active = true;
+        private IPEndPoint iep;
+        private Socket server, client;
         private Dictionary<String, String> USER;
         private Dictionary<String, List<String>> GROUP;
         private Dictionary<String, Socket> CLIENT;
@@ -58,6 +66,107 @@ namespace Chat_app_Server
                 }
                 GROUP.Add("Group" + i.ToString(), groupUser);
             }
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            Thread ServerThread = new Thread(new ThreadStart(ServerStart));
+            ServerThread.Start();
+            ServerThread.IsBackground = true;
+        }
+
+        private void ServerStart()
+        {
+            iep = new IPEndPoint(IPAddress.Parse(txtIP.Text), Int32.Parse(txtPort.Text));
+            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            try
+            {
+                server.Bind(iep);
+                server.Listen(100);
+
+                AppendRichTextBox("Start accept connect from client!");
+                changeButtonEnable(btnStart, false);
+                changeButtonEnable(btnStop, true);
+                //Clipboard.SetText(txtIP.Text);
+                while (active)
+                {
+                    client = server.Accept();
+                    byte[] data = new byte[1024];
+                    int recv = client.Receive(data);
+                    if (recv == 0) continue;
+                    String s = Encoding.ASCII.GetString(data, 0, recv);
+
+                    Json infoJson = JsonSerializer.Deserialize<Json>(s);
+
+                    if (infoJson != null)
+                    {
+                        switch (infoJson.type)
+                        {
+                            case "SIGNIN":
+                                //reponseSignin(infoJson, client);
+                                break;
+                            case "LOGIN":
+                                reponseLogin(infoJson, client);
+                                //AppendRichTextBox(infoJson.content);
+                                break;
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void reponseLogin(Json infoJson, Socket client)
+        {
+            Account account = JsonSerializer.Deserialize<Account>(infoJson.content);
+            if (account != null && account.userName != null && USER.ContainsKey(account.userName) && !CLIENT.ContainsKey(account.userName) && USER[account.userName] == account.password)
+            {
+                Json notification = new Json("LOGIN_FEEDBACK", "TRUE");
+                sendJson(notification, client);
+                AppendRichTextBox(account.userName + " logged in!");
+
+                CLIENT.Add(account.userName, client);
+                //clientService(client);
+            }
+            else
+            {
+                Json notification = new Json("LOGIN_FEEDBACK", "FALSE");
+                sendJson(notification, client);
+                AppendRichTextBox(account.userName + " can not login!");
+            }
+        }
+
+        private void sendJson(Json json, Socket server)
+        {
+            String message = JsonSerializer.Serialize(json);
+            byte[] data = new byte[1024];
+            data = Encoding.ASCII.GetBytes(message);
+
+            server.Send(data, data.Length, SocketFlags.None);
+        }
+
+        private void AppendRichTextBox(string value)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(AppendRichTextBox), new object[] { value });
+                return;
+            }
+            rtbDialog.AppendText(value);
+        }
+
+        private void changeButtonEnable(Button btn, bool enable)
+        {
+            btn.BeginInvoke(new MethodInvoker(() =>
+            {
+                btn.Enabled = enable;
+            }));
         }
     }
 }

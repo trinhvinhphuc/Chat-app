@@ -65,7 +65,7 @@
             this.txtIP.Location = new System.Drawing.Point(12, 84);
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(225, 22);
-            this.txtIP.TabIndex = 2;
+            this.txtIP.TabIndex = 1;
             // 
             // label3
             // 
@@ -94,12 +94,14 @@
             this.btnStart.Location = new System.Drawing.Point(12, 171);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(225, 32);
-            this.btnStart.TabIndex = 3;
+            this.btnStart.TabIndex = 0;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = false;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // rtbDialog
             // 
+            this.rtbDialog.Enabled = false;
             this.rtbDialog.Location = new System.Drawing.Point(12, 229);
             this.rtbDialog.Name = "rtbDialog";
             this.rtbDialog.Size = new System.Drawing.Size(225, 248);

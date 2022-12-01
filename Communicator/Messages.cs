@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace Communicator
+﻿namespace Communicator
 {
-    internal class Messages
+    public class Messages
     {
         public String sender { get; set; }
         public String receiver { get; set; }
@@ -18,7 +11,5 @@ namespace Communicator
             this.receiver = recerver;
             this.message = message;
         }
-        [JsonConstructor]
-        public Messages() { }
     }
 }
