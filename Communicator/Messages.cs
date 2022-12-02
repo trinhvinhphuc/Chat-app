@@ -1,4 +1,6 @@
-﻿namespace Communicator
+﻿using System.Text.Json.Serialization;
+
+namespace Communicator
 {
     public class Messages
     {
@@ -11,5 +13,7 @@
             this.receiver = recerver;
             this.message = message;
         }
+        [JsonConstructor]
+        public Messages() { }
     }
 }

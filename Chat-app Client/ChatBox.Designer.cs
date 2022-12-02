@@ -55,7 +55,7 @@
             this.tblUser.Name = "tblUser";
             this.tblUser.RowTemplate.Height = 25;
             this.tblUser.Size = new System.Drawing.Size(152, 201);
-            this.tblUser.TabIndex = 0;
+            this.tblUser.TabIndex = 4;
             // 
             // Online
             // 
@@ -71,7 +71,7 @@
             this.tblGroup.Name = "tblGroup";
             this.tblGroup.RowTemplate.Height = 25;
             this.tblGroup.Size = new System.Drawing.Size(152, 201);
-            this.tblGroup.TabIndex = 0;
+            this.tblGroup.TabIndex = 3;
             this.tblGroup.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tblGroup_CellContentClick);
             // 
             // Group
@@ -82,11 +82,11 @@
             // 
             // rtbDialog
             // 
-            this.rtbDialog.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rtbDialog.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.rtbDialog.Location = new System.Drawing.Point(179, 43);
             this.rtbDialog.Name = "rtbDialog";
             this.rtbDialog.Size = new System.Drawing.Size(609, 408);
-            this.rtbDialog.TabIndex = 1;
+            this.rtbDialog.TabIndex = 2;
             this.rtbDialog.Text = "";
             // 
             // btnPicture
@@ -106,7 +106,8 @@
             this.txtMessage.Location = new System.Drawing.Point(215, 458);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(538, 29);
-            this.txtMessage.TabIndex = 3;
+            this.txtMessage.TabIndex = 1;
+            this.txtMessage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMessage_KeyPress);
             // 
             // btnSend
             // 
@@ -118,6 +119,7 @@
             this.btnSend.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.btnSend.TabIndex = 2;
             this.btnSend.TabStop = false;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // lblWelcome
             // 
@@ -136,7 +138,7 @@
             this.txtReceiver.Location = new System.Drawing.Point(179, 7);
             this.txtReceiver.Name = "txtReceiver";
             this.txtReceiver.Size = new System.Drawing.Size(111, 29);
-            this.txtReceiver.TabIndex = 3;
+            this.txtReceiver.TabIndex = 0;
             // 
             // btnCreateGroup
             // 
@@ -147,7 +149,7 @@
             this.btnCreateGroup.Location = new System.Drawing.Point(12, 458);
             this.btnCreateGroup.Name = "btnCreateGroup";
             this.btnCreateGroup.Size = new System.Drawing.Size(152, 29);
-            this.btnCreateGroup.TabIndex = 29;
+            this.btnCreateGroup.TabIndex = 5;
             this.btnCreateGroup.Text = "Create Group";
             this.btnCreateGroup.UseVisualStyleBackColor = false;
             // 

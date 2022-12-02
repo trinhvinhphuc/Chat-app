@@ -13,10 +13,10 @@ namespace Chat_app_Server
     {
         private bool active = true;
         private IPEndPoint iep;
-        private Socket server, client;
+        private TcpListener server;
         private Dictionary<String, String> USER;
         private Dictionary<String, List<String>> GROUP;
-        private Dictionary<String, Socket> CLIENT;
+        private Dictionary<String, TcpClient> CLIENT;
 
         public Server()
         {
@@ -49,7 +49,7 @@ namespace Chat_app_Server
         {
             USER = new Dictionary<String, String>();
             GROUP = new Dictionary<String, List<String>>();
-            CLIENT = new Dictionary<String, Socket>();
+            CLIENT = new Dictionary<String, TcpClient>();
 
             for (char uName = 'A'; uName <= 'Z'; uName++)
             {
@@ -72,49 +72,28 @@ namespace Chat_app_Server
 
         private void btnStart_Click(object sender, EventArgs e)
         {
+            iep = new IPEndPoint(IPAddress.Parse(txtIP.Text), int.Parse(txtPort.Text));
+            server = new TcpListener(iep);
+            server.Start();
+
             Thread ServerThread = new Thread(new ThreadStart(ServerStart));
-            ServerThread.Start();
             ServerThread.IsBackground = true;
+            ServerThread.Start();
         }
 
         private void ServerStart()
         {
-            iep = new IPEndPoint(IPAddress.Parse(txtIP.Text), Int32.Parse(txtPort.Text));
-            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
             try
             {
-                server.Bind(iep);
-                server.Listen(100);
-
                 AppendRichTextBox("Start accept connect from client!");
                 changeButtonEnable(btnStart, false);
                 changeButtonEnable(btnStop, true);
                 //Clipboard.SetText(txtIP.Text);
                 while (active)
                 {
-                    client = server.Accept();
-                    byte[] data = new byte[1024];
-                    int recv = client.Receive(data);
-                    if (recv == 0) continue;
-                    String s = Encoding.ASCII.GetString(data, 0, recv);
-
-                    Json infoJson = JsonSerializer.Deserialize<Json>(s);
-
-                    if (infoJson != null)
-                    {
-                        switch (infoJson.type)
-                        {
-                            case "SIGNIN":
-                                //reponseSignin(infoJson, client);
-                                break;
-                            case "LOGIN":
-                                reponseLogin(infoJson, client);
-                                //AppendRichTextBox(infoJson.content);
-                                break;
-                        }
-                    }
-
+                    TcpClient client = server.AcceptTcpClient();
+                    var clientThread = new Thread(() => clientService(client));
+                    clientThread.Start();
                 }
 
             }
@@ -124,7 +103,7 @@ namespace Chat_app_Server
             }
         }
 
-        private void reponseLogin(Json infoJson, Socket client)
+        private void reponseLogin(Json infoJson, TcpClient client)
         {
             Account account = JsonSerializer.Deserialize<Account>(infoJson.content);
             if (account != null && account.userName != null && USER.ContainsKey(account.userName) && !CLIENT.ContainsKey(account.userName) && USER[account.userName] == account.password)
@@ -133,8 +112,8 @@ namespace Chat_app_Server
                 sendJson(notification, client);
                 AppendRichTextBox(account.userName + " logged in!");
 
+                CLIENT.Remove(account.userName);
                 CLIENT.Add(account.userName, client);
-                clientService(client);
             }
             else
             {
@@ -144,21 +123,35 @@ namespace Chat_app_Server
             }
         }
 
-        private void clientService(Socket client)
+        private void clientService(TcpClient client)
         {
-            bool threadActive = true;
-            Thread clientThread = new Thread(() =>
+            StreamReader streamReader = new StreamReader(client.GetStream());
+            String s = streamReader.ReadLine();
+            Json infoJson = JsonSerializer.Deserialize<Json>(s);
+
+            if (infoJson != null)
             {
+                switch (infoJson.type)
+                {
+                    case "SIGNIN":
+                        //reponseSignin(infoJson, client);
+                        break;
+                    case "LOGIN":
+                        reponseLogin(infoJson, client);
+                        //AppendRichTextBox(infoJson.content);
+                        break;
+                }
+            }
+
+            try
+            {
+                bool threadActive = true;
                 while (threadActive && client != null)
                 {
-                    try
+                    s = streamReader.ReadLine();
+                    infoJson = JsonSerializer.Deserialize<Json>(s);
+                    if (infoJson != null && infoJson.content != null)
                     {
-                        byte[] data = new byte[1024];
-                        int recv = client.Receive(data);
-                        if (recv == 0) continue;
-                        String s = Encoding.ASCII.GetString(data, 0, recv);
-                        Json infoJson = JsonSerializer.Deserialize<Json>(s);
-
                         switch (infoJson.type)
                         {
                             case "STARTUP":
@@ -168,7 +161,7 @@ namespace Chat_app_Server
                                     onlUser.Remove(infoJson.content);
 
                                     List<String> group = new List<string>();
-                                    foreach(String key in GROUP.Keys)
+                                    foreach (String key in GROUP.Keys)
                                     {
                                         if (GROUP[key].Contains(infoJson.content))
                                         {
@@ -185,25 +178,37 @@ namespace Chat_app_Server
                                     sendJson(json, client);
                                 }
                                 break;
+                            case "MESSAGE":
+                                if (infoJson.content != null)
+                                {
+                                    Messages messages = JsonSerializer.Deserialize<Messages>(infoJson.content);
+                                    if (messages != null && CLIENT.ContainsKey(messages.receiver))
+                                    {
+                                        AppendRichTextBox(messages.sender + " to " + messages.receiver + ": " + messages.message);
+                                        TcpClient receiver = CLIENT[messages.receiver];
+                                        sendJson(infoJson, receiver);
+                                    }
+                                }
+                                break;
                         }
                     }
-                    catch
-                    {
-                        threadActive = false;
-                    }                   
                 }
-            });
-            clientThread.Start();
-            clientThread.IsBackground = true;
+            }
+            catch
+            {
+                client.Close();
+            }
         }
 
-        private void sendJson(Json json, Socket server)
+        private void sendJson(Json json, TcpClient client)
         {
-            String message = JsonSerializer.Serialize(json);
-            byte[] data = new byte[1024];
-            data = Encoding.ASCII.GetBytes(message);
+            byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(json);
+            StreamWriter streamWriter = new StreamWriter(client.GetStream());
 
-            server.Send(data, data.Length, SocketFlags.None);
+            String S = Encoding.ASCII.GetString(jsonUtf8Bytes, 0, jsonUtf8Bytes.Length);
+
+            streamWriter.WriteLine(S);
+            streamWriter.Flush();
         }
 
         private void AppendRichTextBox(string value)

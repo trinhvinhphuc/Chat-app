@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Text.Json;
 using Communicator;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Chat_app_Client
 {
@@ -11,8 +12,9 @@ namespace Chat_app_Client
     {
         private bool active = true;
         private IPEndPoint ipe;
-        private Socket server;
-        private Form form;
+        private TcpClient server;
+        private StreamReader streamReader;
+        private StreamWriter streamWriter;
 
         public Login()
         {
@@ -21,40 +23,32 @@ namespace Chat_app_Client
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            ipe = new IPEndPoint(IPAddress.Parse(txtLoginIP.Text), 2009);
-            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ipe = new IPEndPoint(IPAddress.Parse(txtLoginIP.Text), 2009);           
+            server = new TcpClient();
+
             server.Connect(ipe);
 
-            Account account = new Account(txtLoginUsername.Text, txtLoginPassword.Text);
+            streamReader = new StreamReader(server.GetStream());
+            streamWriter = new StreamWriter(server.GetStream());
 
-            String loginJson = JsonSerializer.Serialize(account);
-            Json json = new Json("LOGIN", loginJson);
-            sendJson(json, server);
             var threadLog = new Thread(new ThreadStart(waitForLoginFeedback));
+            threadLog.IsBackground = true;
             threadLog.Start();
         }
 
         private void waitForLoginFeedback()
         {
-            while (active && server != null)
+            Account account = new Account(txtLoginUsername.Text, txtLoginPassword.Text);
+            String accountJson = JsonSerializer.Serialize(account);
+            Json json = new Json("LOGIN", accountJson);
+
+            sendJson(json, server);
+
+            accountJson = streamReader.ReadLine();
+            Json? feedback = JsonSerializer.Deserialize<Json?>(accountJson);
+
+            try
             {
-                byte[] data = new byte[1024];
-                int recv = 0;
-
-                try
-                {
-                    recv = server.Receive(data);
-                }
-                catch
-                {
-                    active = false;
-                    this.Close();
-                }
-                if (recv == 0) continue;
-
-                String feedbackJson = Encoding.ASCII.GetString(data, 0, recv);
-                Json? feedback = JsonSerializer.Deserialize<Json?>(feedbackJson);
-
                 if (feedback != null)
                 {
                     switch (feedback.type)
@@ -62,11 +56,11 @@ namespace Chat_app_Client
                         case "LOGIN_FEEDBACK":
                             if (feedback.content == "TRUE")
                             {
-                                //this.Invoke((MethodInvoker)delegate () {
-                                //});
-                                //this.Invoke(new MethodInvoker(this.Close));
-                                Application.Run(new ChatBox(server, txtLoginUsername.Text));
-                                this.Close();
+                                new Thread(() => Application.Run(new ChatBox(server, txtLoginUsername.Text))).Start();
+                                this.Invoke((MethodInvoker)delegate
+                                {
+                                    this.Close();
+                                });
                                 break;
                             }
                             if (feedback.content == "FALSE")
@@ -76,22 +70,30 @@ namespace Chat_app_Client
                             break;
                     }
                 }
-            }          
+            }
+            catch
+            {
+
+            }
         }
 
-        private void sendJson(Json json, Socket server)
+        private void sendJson(Json json, TcpClient client)
         {
-            String message = JsonSerializer.Serialize(json);
-            byte[] data = new byte[1024];
-            data = Encoding.ASCII.GetBytes(message);
+            //String message = JsonSerializer.Serialize(json);
+            //byte[] data = new byte[1024];
+            //data = Encoding.ASCII.GetBytes(message);
+            //server.Send(data, data.Length, SocketFlags.None);
 
-            server.Send(data, data.Length, SocketFlags.None);
+            byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(json);
+            StreamWriter streamWriter = new StreamWriter(client.GetStream());
+            String S = Encoding.ASCII.GetString(jsonUtf8Bytes, 0, jsonUtf8Bytes.Length);
+            streamWriter.WriteLine(S);
+            streamWriter.Flush();
         }
 
         private void lblSignin_Click(object sender, EventArgs e)
         {
-            form = new Signin();
-            form.Show();
+            new Signin().Show();
             this.Close();
         }
     }
