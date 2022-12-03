@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.tblUser = new System.Windows.Forms.DataGridView();
-            this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Online = new System.Windows.Forms.DataGridViewButtonColumn();
             this.tblGroup = new System.Windows.Forms.DataGridView();
-            this.Group = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Group = new System.Windows.Forms.DataGridViewButtonColumn();
             this.rtbDialog = new System.Windows.Forms.RichTextBox();
             this.btnPicture = new System.Windows.Forms.PictureBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
@@ -48,27 +48,38 @@
             // 
             // tblUser
             // 
+            this.tblUser.AllowUserToAddRows = false;
+            this.tblUser.AllowUserToDeleteRows = false;
             this.tblUser.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tblUser.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Online});
             this.tblUser.Location = new System.Drawing.Point(12, 43);
             this.tblUser.Name = "tblUser";
+            this.tblUser.ReadOnly = true;
             this.tblUser.RowTemplate.Height = 25;
             this.tblUser.Size = new System.Drawing.Size(152, 201);
             this.tblUser.TabIndex = 4;
+            this.tblUser.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tblUser_CellContentClick);
             // 
             // Online
             // 
             this.Online.HeaderText = "Online";
             this.Online.Name = "Online";
+            this.Online.ReadOnly = true;
+            this.Online.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Online.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Online.Width = 120;
             // 
             // tblGroup
             // 
+            this.tblGroup.AllowUserToAddRows = false;
+            this.tblGroup.AllowUserToDeleteRows = false;
             this.tblGroup.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tblGroup.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Group});
             this.tblGroup.Location = new System.Drawing.Point(12, 250);
             this.tblGroup.Name = "tblGroup";
+            this.tblGroup.ReadOnly = true;
             this.tblGroup.RowTemplate.Height = 25;
             this.tblGroup.Size = new System.Drawing.Size(152, 201);
             this.tblGroup.TabIndex = 3;
@@ -78,7 +89,10 @@
             // 
             this.Group.HeaderText = "Group";
             this.Group.Name = "Group";
-            this.Group.Width = 150;
+            this.Group.ReadOnly = true;
+            this.Group.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Group.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Group.Width = 120;
             // 
             // rtbDialog
             // 
@@ -99,6 +113,7 @@
             this.btnPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.btnPicture.TabIndex = 2;
             this.btnPicture.TabStop = false;
+            this.btnPicture.Click += new System.EventHandler(this.btnPicture_Click);
             // 
             // txtMessage
             // 
@@ -152,6 +167,7 @@
             this.btnCreateGroup.TabIndex = 5;
             this.btnCreateGroup.Text = "Create Group";
             this.btnCreateGroup.UseVisualStyleBackColor = false;
+            this.btnCreateGroup.Click += new System.EventHandler(this.btnCreateGroup_Click);
             // 
             // button1
             // 
@@ -204,8 +220,8 @@
         private Label lblWelcome;
         private TextBox txtReceiver;
         private Button btnCreateGroup;
-        private DataGridViewTextBoxColumn Online;
-        private DataGridViewTextBoxColumn Group;
         private Button button1;
+        private DataGridViewButtonColumn Online;
+        private DataGridViewButtonColumn Group;
     }
 }

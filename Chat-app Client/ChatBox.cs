@@ -11,6 +11,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.LinkLabel;
+using Application = System.Windows.Forms.Application;
 
 namespace Chat_app_Client
 {
@@ -52,13 +54,58 @@ namespace Chat_app_Client
             String messageJson = JsonSerializer.Serialize(messages);
             Json json = new Json("MESSAGE", messageJson);
             sendJson(json);
+
+            txtMessage.Clear();
+        }
+
+        private void txtMessage_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((int)e.KeyChar == 13)
+            {
+                btnSend_Click(this.btnSend, e);
+            }
+        }
+
+        private void tblGroup_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            txtReceiver.Text = tblGroup.Rows[e.RowIndex].Cells[0].Value.ToString();
+        }
+
+        private void tblUser_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            txtReceiver.Text = tblUser.Rows[e.RowIndex].Cells["Online"].Value.ToString();
+        }
+
+        private void btnCreateGroup_Click(object sender, EventArgs e)
+        {
+            new Thread(() => Application.Run(new GroupCreator(server))).Start();
+        }
+
+        private void btnPicture_Click(object sender, EventArgs e)
+        {
+            Thread dialogThread = new Thread(() =>
+            {
+                try
+                {
+                    OpenFileDialog ofd = new OpenFileDialog();
+                    //ofd.Filter = "jpg files(*.jpg)|*.jpg| PNG files(*.png)|*.png| All files(*.*)|*.*";
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        sendFile(ofd.FileName);
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("An Error Occured", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            });
+            dialogThread.SetApartmentState(ApartmentState.STA);
+            dialogThread.Start();
+            dialogThread.IsBackground = true;
         }
 
         private void receiveTheard()
         {
-            Json request = new Json("STARTUP", name);
-            sendJson(request);
-
             bool threadActive = true;
             while(server != null && threadActive)
             {
@@ -70,7 +117,9 @@ namespace Chat_app_Client
                     switch (infoJson.type)
                     {
                         case "STARTUP_FEEDBACK":
-                            //AppendRichTextBox(infoJson.content);
+                            cleanDataGridView(tblGroup);
+                            cleanDataGridView(tblUser);
+
                             Startup startup = JsonSerializer.Deserialize<Startup>(infoJson.content);
 
                             List<string> groups = JsonSerializer.Deserialize<List<String>>(startup.group);
@@ -82,7 +131,7 @@ namespace Chat_app_Client
                             List<string> users = JsonSerializer.Deserialize<List<String>>(startup.onlUser);
                             foreach (String user in users)
                             {
-                                addDataInDataGridView(tblGroup, new string[] { user });
+                                addDataInDataGridView(tblUser, new string[] { user });
                             }
                             break;
                         case "MESSAGE":
@@ -143,6 +192,20 @@ namespace Chat_app_Client
             }));
         }
 
+        private void cleanDataGridView(DataGridView dataGridView)
+        {
+            dataGridView.BeginInvoke(new MethodInvoker(() =>
+            {
+                dataGridView.Rows.Clear();
+            }));
+            
+        }
+
+        private void addDataInDataGridView(DataGridView dataGridView, String[] array)
+        {
+            dataGridView.Invoke(new Action(() => { dataGridView.Rows.Add(array); }));
+        }
+
         private void sendJson(Json json)
         {
             byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(json);
@@ -152,21 +215,33 @@ namespace Chat_app_Client
             streamWriter.Flush();
         }
 
-        private void addDataInDataGridView(DataGridView dataGridView, String[] array)
+        private void sendFile(String fName)
         {
-            dataGridView.Invoke(new Action(() => { dataGridView.Rows.Add(array); }));
-        }
-
-        private void tblGroup_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            txtReceiver.Text = tblGroup.Rows[e.RowIndex].Cells[0].Value.ToString();
-        }
-
-        private void txtMessage_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if ((int)e.KeyChar == 13)
+            try
             {
-                btnSend_Click(this.btnSend, e);
+                String path = "";
+                fName = fName.Replace("\\", "/");
+                while (fName.IndexOf("/") > -1)
+                {
+                    path += fName.Substring(0, fName.IndexOf("/") + 1);
+                    fName = fName.Substring(fName.IndexOf("/") + 1);
+                }
+
+                byte[] fNameByte = Encoding.ASCII.GetBytes(fName);
+                byte[] fileData = File.ReadAllBytes(path + fName);
+
+                byte[] clientData = new byte[4 + fNameByte.Length + fileData.Length];
+                byte[] fNameLen = BitConverter.GetBytes(fNameByte.Length);
+
+                fNameLen.CopyTo(clientData, 0);
+                fNameByte.CopyTo(clientData, 4 + fName.Length);
+
+                streamWriter.Write(System.Convert.ToBase64String(File.ReadAllBytes(path + fName)));
+                //AppendRichTextBox(path + fName, "", "");
+            }
+            catch (Exception e)
+            {
+
             }
         }
     }

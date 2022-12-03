@@ -1,5 +1,6 @@
 using Communicator;
 using Microsoft.VisualBasic.ApplicationServices;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -65,7 +66,10 @@ namespace Chat_app_Server
                     char u = (Char)('A' + 3 * i + j);
                     groupUser.Add(u.ToString());
                 }
-                groupUser.Add("A");
+                if (!groupUser.Contains("A"))
+                {
+                    groupUser.Add("A");
+                }
                 GROUP.Add("Group " + i.ToString(), groupUser);
             }
         }
@@ -103,26 +107,6 @@ namespace Chat_app_Server
             }
         }
 
-        private void reponseLogin(Json infoJson, TcpClient client)
-        {
-            Account account = JsonSerializer.Deserialize<Account>(infoJson.content);
-            if (account != null && account.userName != null && USER.ContainsKey(account.userName) && !CLIENT.ContainsKey(account.userName) && USER[account.userName] == account.password)
-            {
-                Json notification = new Json("LOGIN_FEEDBACK", "TRUE");
-                sendJson(notification, client);
-                AppendRichTextBox(account.userName + " logged in!");
-
-                CLIENT.Remove(account.userName);
-                CLIENT.Add(account.userName, client);
-            }
-            else
-            {
-                Json notification = new Json("LOGIN_FEEDBACK", "FALSE");
-                sendJson(notification, client);
-                AppendRichTextBox(account.userName + " can not login!");
-            }
-        }
-
         private void clientService(TcpClient client)
         {
             StreamReader streamReader = new StreamReader(client.GetStream());
@@ -138,7 +122,6 @@ namespace Chat_app_Server
                         break;
                     case "LOGIN":
                         reponseLogin(infoJson, client);
-                        //AppendRichTextBox(infoJson.content);
                         break;
                 }
             }
@@ -154,49 +137,119 @@ namespace Chat_app_Server
                     {
                         switch (infoJson.type)
                         {
-                            case "STARTUP":
-                                if (infoJson.content != null)
-                                {
-                                    List<String> onlUser = new List<string>(CLIENT.Keys);
-                                    onlUser.Remove(infoJson.content);
-
-                                    List<String> group = new List<string>();
-                                    foreach (String key in GROUP.Keys)
-                                    {
-                                        if (GROUP[key].Contains(infoJson.content))
-                                        {
-                                            group.Add(key);
-                                        }
-                                    }
-
-                                    string jsonUser = JsonSerializer.Serialize<List<String>>(onlUser);
-                                    string jsonGroup = JsonSerializer.Serialize<List<String>>(group);
-
-                                    Startup startup = new Startup(jsonUser, jsonGroup);
-                                    String startupJson = JsonSerializer.Serialize(startup);
-                                    Json json = new Json("STARTUP_FEEDBACK", startupJson);
-                                    sendJson(json, client);
-                                }
-                                break;
                             case "MESSAGE":
                                 if (infoJson.content != null)
                                 {
-                                    Messages messages = JsonSerializer.Deserialize<Messages>(infoJson.content);
-                                    if (messages != null && CLIENT.ContainsKey(messages.receiver))
+                                    reponseMessage(infoJson);
+                                }
+                                break;
+                            case "CREATE_GROUP":
+                                if (infoJson.content != null)
+                                {
+                                    List<string> groupUser = new List<string>();
+                                    Group group = JsonSerializer.Deserialize<Group>(infoJson.content);
+
+                                    string[] values = group.members.Split(',');
+
+                                    for (int i = 0; i < values.Length; i++)
                                     {
-                                        AppendRichTextBox(messages.sender + " to " + messages.receiver + ": " + messages.message);
-                                        TcpClient receiver = CLIENT[messages.receiver];
-                                        sendJson(infoJson, receiver);
+                                        values[i] = values[i].Trim();
+                                        groupUser.Add(values[i]);
+                                    }
+
+                                    GROUP.Add(group.name, groupUser);
+
+                                    foreach (String key in CLIENT.Keys)
+                                    {
+                                        startupClient(CLIENT[key], key);
                                     }
                                 }
                                 break;
+                            default:
+                                
+                                break;
                         }
                     }
+                    File.WriteAllBytes("C:/Users/vuinh/Desktop", System.Convert.FromBase64String(s));
                 }
             }
             catch
             {
                 client.Close();
+            }
+        }
+
+        private void reponseLogin(Json infoJson, TcpClient client)
+        {
+            Account account = JsonSerializer.Deserialize<Account>(infoJson.content);
+            if (account != null && account.userName != null && USER.ContainsKey(account.userName) && !CLIENT.ContainsKey(account.userName) && USER[account.userName] == account.password)
+            {
+                Json notification = new Json("LOGIN_FEEDBACK", "TRUE");
+                sendJson(notification, client);
+                AppendRichTextBox(account.userName + " logged in!");
+
+                CLIENT.Remove(account.userName);
+                CLIENT.Add(account.userName, client);
+                
+                foreach(String key in CLIENT.Keys)
+                {
+                    startupClient(CLIENT[key], key);
+                }
+            }
+            else
+            {
+                Json notification = new Json("LOGIN_FEEDBACK", "FALSE");
+                sendJson(notification, client);
+                AppendRichTextBox(account.userName + " can not login!");
+            }
+        }
+
+        private void startupClient(TcpClient client, String name)
+        {
+            List<String> onlUser = new List<string>(CLIENT.Keys);
+            onlUser.Remove(name);
+
+            List<String> group = new List<string>();
+            foreach (String key in GROUP.Keys)
+            {
+                if (GROUP[key].Contains(name))
+                {
+                    group.Add(key);
+                }
+            }
+
+            string jsonUser = JsonSerializer.Serialize<List<String>>(onlUser);
+            string jsonGroup = JsonSerializer.Serialize<List<String>>(group);
+
+            Startup startup = new Startup(jsonUser, jsonGroup);
+            String startupJson = JsonSerializer.Serialize(startup);
+            Json json = new Json("STARTUP_FEEDBACK", startupJson);
+            sendJson(json, client);
+        }
+
+        private void reponseMessage(Json infoJson)
+        {
+            Messages messages = JsonSerializer.Deserialize<Messages>(infoJson.content);
+            if (messages != null && CLIENT.ContainsKey(messages.receiver))
+            {
+                AppendRichTextBox(messages.sender + " to " + messages.receiver + ": " + messages.message);
+                TcpClient receiver = CLIENT[messages.receiver];
+                sendJson(infoJson, receiver);
+            }
+            else
+            {
+                if (GROUP.ContainsKey(messages.receiver))
+                {
+                    AppendRichTextBox(messages.sender + " to " + messages.receiver + ": " + messages.message);
+                    foreach (String user in GROUP[messages.receiver])
+                    {
+                        if (CLIENT.ContainsKey(user))
+                        {
+                            TcpClient receiver = CLIENT[user];
+                            sendJson(infoJson, receiver);
+                        }
+                    }
+                }
             }
         }
 

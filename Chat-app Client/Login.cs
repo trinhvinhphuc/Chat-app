@@ -23,6 +23,12 @@ namespace Chat_app_Client
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            if (txtLoginPassword.Text == "" || txtLoginIP.Text == "" || txtLoginUsername.Text == "")
+            {
+                MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             ipe = new IPEndPoint(IPAddress.Parse(txtLoginIP.Text), 2009);           
             server = new TcpClient();
 
