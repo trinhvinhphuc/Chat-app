@@ -165,12 +165,47 @@ namespace Chat_app_Server
                                     }
                                 }
                                 break;
-                            default:
-                                
+                            case "FILE":
+                                if (infoJson.content != null)
+                                {
+                                    FileMessage fileMessage = JsonSerializer.Deserialize<FileMessage>(infoJson.content);
+                                    string fileName = @"D:\Documents\Testing\Result\" + String.Format("{0:yyyy-MM-dd HH-mm-ss}__{1}", DateTime.Now, "Server") + fileMessage.extension;
+                                    FileInfo fi = new FileInfo(fileName);
+
+                                    try
+                                    {
+                                        // Check if file already exists. If yes, delete it.     
+                                        if (fi.Exists)
+                                        {
+                                            fi.Delete();
+                                        }
+
+                                        using (FileStream fs = File.Create(fileName))
+                                        {
+                                            Byte[] txt = Encoding.ASCII.GetBytes(fileMessage.content);
+                                            fs.Write(txt, 0, txt.Length); 
+                                            //File.WriteAllBytes(fileName, Encoding.ASCII.GetBytes(fileMessage.content));
+                                        }
+
+                                        
+
+                                        //// Create a new file     
+                                        //using (FileStream fs = fi.Create())
+                                        //{
+                                        //    Byte[] txt = new UTF8Encoding(true).GetBytes("New file.");
+                                        //    fs.Write(txt, 0, txt.Length);
+
+                                        //    File.WriteAllBytes(fi, System.Convert.FromBase64String(textFromClient));
+                                        //}
+                                    }
+                                    catch (Exception Ex)
+                                    {
+                                        Console.WriteLine(Ex.ToString());
+                                    }
+                                }
                                 break;
                         }
                     }
-                    File.WriteAllBytes("C:/Users/vuinh/Desktop", System.Convert.FromBase64String(s));
                 }
             }
             catch

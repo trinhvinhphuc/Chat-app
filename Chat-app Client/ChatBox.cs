@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.LinkLabel;
 using Application = System.Windows.Forms.Application;
@@ -91,7 +93,28 @@ namespace Chat_app_Client
                     //ofd.Filter = "jpg files(*.jpg)|*.jpg| PNG files(*.png)|*.png| All files(*.*)|*.*";
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
-                        sendFile(ofd.FileName);
+                        //if (Path.GetExtension(ofd.FileName) == ".txt")
+                        //{
+                            AppendRichTextBox(ofd.FileName, "textfile", "Download here");
+
+                            String fName = ofd.FileName;
+                            String path = "";
+                            fName = fName.Replace("\\", "/");
+                            while (fName.IndexOf("/") > -1)
+                            {
+                                path += fName.Substring(0, fName.IndexOf("/") + 1);
+                                fName = fName.Substring(fName.IndexOf("/") + 1);
+                            }
+                            String s = JsonSerializer.Serialize(File.ReadAllText(path+fName));
+
+                            AppendRichTextBox(s, "textfile", "Download here");
+
+                            FileMessage message = new FileMessage(this.name, txtReceiver.Text, s, Path.GetExtension(ofd.FileName));
+
+                            Json json = new Json("FILE", JsonSerializer.Serialize(message));
+                            sendJson(json);
+                        //}
+                    //sendFile(ofd.FileName);
                     }
                 }
                 catch (Exception)
