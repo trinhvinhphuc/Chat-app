@@ -38,6 +38,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(413, 278);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -53,6 +54,7 @@
             this.btnCreate.TabIndex = 30;
             this.btnCreate.Text = "Download";
             this.btnCreate.UseVisualStyleBackColor = false;
+            this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             // 
             // ImageView
             // 
@@ -63,6 +65,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Name = "ImageView";
             this.Text = "Image View";
+            this.Load += new System.EventHandler(this.ImageView_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

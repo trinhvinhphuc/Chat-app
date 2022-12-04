@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Formats.Asn1;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -85,6 +87,12 @@ namespace Chat_app_Client
 
         private void btnPicture_Click(object sender, EventArgs e)
         {
+            if (txtReceiver.Text == "")
+            {
+                MessageBox.Show("Receiver field is empty", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             Thread dialogThread = new Thread(() =>
             {
                 try
@@ -93,28 +101,24 @@ namespace Chat_app_Client
                     //ofd.Filter = "jpg files(*.jpg)|*.jpg| PNG files(*.png)|*.png| All files(*.*)|*.*";
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
-                        //if (Path.GetExtension(ofd.FileName) == ".txt")
-                        //{
-                            AppendRichTextBox(ofd.FileName, "textfile", "Download here");
+                        String fName = ofd.FileName;
+                        String path = "";
+                        fName = fName.Replace("\\", "/");
+                        while (fName.IndexOf("/") > -1)
+                        {
+                            path += fName.Substring(0, fName.IndexOf("/") + 1);
+                            fName = fName.Substring(fName.IndexOf("/") + 1);
+                        }
 
-                            String fName = ofd.FileName;
-                            String path = "";
-                            fName = fName.Replace("\\", "/");
-                            while (fName.IndexOf("/") > -1)
-                            {
-                                path += fName.Substring(0, fName.IndexOf("/") + 1);
-                                fName = fName.Substring(fName.IndexOf("/") + 1);
-                            }
-                            String s = JsonSerializer.Serialize(File.ReadAllText(path+fName));
+                        FileMessage message = new FileMessage(this.name, txtReceiver.Text, File.ReadAllBytes(path + fName).Length.ToString(), Path.GetExtension(ofd.FileName));
 
-                            AppendRichTextBox(s, "textfile", "Download here");
+                        Json json = new Json("FILE", JsonSerializer.Serialize(message));
+                        sendJson(json);
 
-                            FileMessage message = new FileMessage(this.name, txtReceiver.Text, s, Path.GetExtension(ofd.FileName));
+                        Console.WriteLine("Sending file");
+                        server.Client.SendFile(path + fName);
 
-                            Json json = new Json("FILE", JsonSerializer.Serialize(message));
-                            sendJson(json);
-                        //}
-                    //sendFile(ofd.FileName);
+                        AppendRichTextBox("File Message", "was sent.", "");
                     }
                 }
                 catch (Exception)
@@ -163,7 +167,48 @@ namespace Chat_app_Client
                                 Messages message = JsonSerializer.Deserialize<Messages?>(infoJson.content);
                                 if (message != null)
                                 {
-                                    AppendRichTextBox(message.sender, message.message, "Download here");
+                                    AppendRichTextBox(message.sender, message.message, "");
+                                }
+                            }
+                            break;
+                        case "FILE":
+                            if (infoJson.content != null)
+                            {
+                                BufferFile bufferFile = JsonSerializer.Deserialize<BufferFile>(infoJson.content);
+                                List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG" };
+
+                                if (ImageExtensions.Contains(bufferFile.extension.ToUpper()))
+                                {
+                                    Application.Run(new ImageView(bufferFile));
+
+                                    AppendRichTextBox(bufferFile.sender, "Shared the " + bufferFile.extension + " file in ", @Environment.CurrentDirectory);
+                                }
+                                else
+                                {
+                                    string fileName = @Environment.CurrentDirectory + "/" + String.Format("{0:yyyy-MM-dd HH-mm-ss}__{1}", DateTime.Now, bufferFile.sender) + bufferFile.extension;
+                                    FileInfo fi = new FileInfo(fileName);
+
+                                    try
+                                    {
+                                        // Check if file already exists. If yes, delete it.     
+                                        if (fi.Exists)
+                                        {
+                                            fi.Delete();
+                                        }
+
+                                        using (FileStream fStream = File.Create(fileName))
+                                        {
+                                            fStream.Write(bufferFile.buffer, 0, bufferFile.buffer.Length);
+                                            fStream.Flush();
+                                            fStream.Close();
+                                        }
+                                    }
+                                    catch (Exception Ex)
+                                    {
+                                        Console.WriteLine(Ex.ToString());
+                                    }
+
+                                    AppendRichTextBox(bufferFile.sender, "Shared the " + bufferFile.extension + " file in ", @Environment.CurrentDirectory);
                                 }
                             }
                             break;
@@ -202,6 +247,8 @@ namespace Chat_app_Client
                 rtbDialog.AppendText(message);
                 rtbDialog.SelectionColor = rtbDialog.ForeColor;
 
+                rtbDialog.AppendText(" ");
+
                 //link
                 rtbDialog.SelectionStart = rtbDialog.TextLength;
                 rtbDialog.SelectionLength = 0;
@@ -236,36 +283,6 @@ namespace Chat_app_Client
 
             streamWriter.WriteLine(S);
             streamWriter.Flush();
-        }
-
-        private void sendFile(String fName)
-        {
-            try
-            {
-                String path = "";
-                fName = fName.Replace("\\", "/");
-                while (fName.IndexOf("/") > -1)
-                {
-                    path += fName.Substring(0, fName.IndexOf("/") + 1);
-                    fName = fName.Substring(fName.IndexOf("/") + 1);
-                }
-
-                byte[] fNameByte = Encoding.ASCII.GetBytes(fName);
-                byte[] fileData = File.ReadAllBytes(path + fName);
-
-                byte[] clientData = new byte[4 + fNameByte.Length + fileData.Length];
-                byte[] fNameLen = BitConverter.GetBytes(fNameByte.Length);
-
-                fNameLen.CopyTo(clientData, 0);
-                fNameByte.CopyTo(clientData, 4 + fName.Length);
-
-                streamWriter.Write(System.Convert.ToBase64String(File.ReadAllBytes(path + fName)));
-                //AppendRichTextBox(path + fName, "", "");
-            }
-            catch (Exception e)
-            {
-
-            }
         }
     }
 }

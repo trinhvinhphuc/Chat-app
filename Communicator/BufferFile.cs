@@ -1,16 +1,16 @@
 ﻿namespace Communicator
 {
-    public class FileMessage
+    public class BufferFile
     {
         public String sender { get; set; }
         public String receiver { get; set; }
-        public String lenght { get; set; }
+        public byte[] buffer { get; set; }
         public String extension { get; set; }
-        public FileMessage(string sender, string receiver, string lenght, string extension)
+        public BufferFile(string sender, string receiver, byte[] buffer, string extension)
         {
             this.sender = sender;
             this.receiver = receiver;
-            this.lenght = lenght;
+            this.buffer = buffer;
             this.extension = extension;
         }
     }

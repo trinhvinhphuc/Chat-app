@@ -2,6 +2,7 @@ using Communicator;
 using Microsoft.VisualBasic.ApplicationServices;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -169,34 +170,37 @@ namespace Chat_app_Server
                                 if (infoJson.content != null)
                                 {
                                     FileMessage fileMessage = JsonSerializer.Deserialize<FileMessage>(infoJson.content);
-                                    string fileName = @"D:\Documents\Testing\Result\" + String.Format("{0:yyyy-MM-dd HH-mm-ss}__{1}", DateTime.Now, "Server") + fileMessage.extension;
-                                    FileInfo fi = new FileInfo(fileName);
 
                                     try
                                     {
-                                        // Check if file already exists. If yes, delete it.     
-                                        if (fi.Exists)
+
+                                        int length = Convert.ToInt32(fileMessage.lenght);
+                                        byte[] buffer = new byte[length];
+                                        int received = 0;
+                                        int read = 0;
+                                        int size = 1024;
+                                        int remaining = 0;
+
+                                        // Read bytes from the client using the length sent from the client    
+                                        while (received < length)
                                         {
-                                            fi.Delete();
+                                            remaining = length - received;
+                                            if (remaining < size)
+                                            {
+                                                size = remaining;
+                                            }
+
+                                            read = client.GetStream().Read(buffer, received, size);
+                                            received += read;
                                         }
 
-                                        using (FileStream fs = File.Create(fileName))
-                                        {
-                                            Byte[] txt = Encoding.ASCII.GetBytes(fileMessage.content);
-                                            fs.Write(txt, 0, txt.Length); 
-                                            //File.WriteAllBytes(fileName, Encoding.ASCII.GetBytes(fileMessage.content));
-                                        }
+                                        BufferFile bufferFile = new BufferFile(fileMessage.sender, fileMessage.receiver, buffer, fileMessage.extension);
 
-                                        
-
-                                        //// Create a new file     
-                                        //using (FileStream fs = fi.Create())
-                                        //{
-                                        //    Byte[] txt = new UTF8Encoding(true).GetBytes("New file.");
-                                        //    fs.Write(txt, 0, txt.Length);
-
-                                        //    File.WriteAllBytes(fi, System.Convert.FromBase64String(textFromClient));
-                                        //}
+                                        String jsonString = JsonSerializer.Serialize(bufferFile);
+                                        Json json = new Json("FILE", jsonString);
+                                        //sendJson(json, client);
+                                        TcpClient tcpClient = CLIENT[fileMessage.receiver];
+                                        sendJson(json, tcpClient);
                                     }
                                     catch (Exception Ex)
                                     {
