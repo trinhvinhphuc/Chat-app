@@ -10,7 +10,6 @@ namespace Chat_app_Client
 {
     public partial class Login : Form
     {
-        private bool active = true;
         private IPEndPoint ipe;
         private TcpClient server;
         private StreamReader streamReader;
@@ -77,19 +76,14 @@ namespace Chat_app_Client
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.ToString());
             }
         }
 
         private void sendJson(Json json, TcpClient client)
         {
-            //String message = JsonSerializer.Serialize(json);
-            //byte[] data = new byte[1024];
-            //data = Encoding.ASCII.GetBytes(message);
-            //server.Send(data, data.Length, SocketFlags.None);
-
             byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(json);
             StreamWriter streamWriter = new StreamWriter(client.GetStream());
             String S = Encoding.ASCII.GetString(jsonUtf8Bytes, 0, jsonUtf8Bytes.Length);
@@ -99,7 +93,7 @@ namespace Chat_app_Client
 
         private void lblSignin_Click(object sender, EventArgs e)
         {
-            new Signin().Show();
+            new Thread(() => Application.Run(new Signin())).Start();
             this.Close();
         }
     }

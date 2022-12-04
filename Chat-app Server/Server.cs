@@ -119,7 +119,7 @@ namespace Chat_app_Server
                 switch (infoJson.type)
                 {
                     case "SIGNIN":
-                        //reponseSignin(infoJson, client);
+                        reponseSignin(infoJson, client);
                         break;
                     case "LOGIN":
                         reponseLogin(infoJson, client);
@@ -215,6 +215,29 @@ namespace Chat_app_Server
             catch
             {
                 client.Close();
+            }
+        }
+
+        private void reponseSignin(Json infoJson, TcpClient client)
+        {
+            Account account = JsonSerializer.Deserialize<Account>(infoJson.content);
+
+            if (account != null && account.userName != null && !USER.ContainsKey(account.userName) && !CLIENT.ContainsKey(account.userName))
+            {
+                Json notification = new Json("SIGNIN_FEEDBACK", "TRUE");
+                sendJson(notification, client);
+                AppendRichTextBox(account.userName + " signed in!");
+
+                USER.Remove(account.userName);
+                USER.Add(account.userName, account.password);
+
+                CLIENT.Remove(account.userName);
+                CLIENT.Add(account.userName, client);
+
+                foreach (String key in CLIENT.Keys)
+                {
+                    startupClient(CLIENT[key], key);
+                }
             }
         }
 

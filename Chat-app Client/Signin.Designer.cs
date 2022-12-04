@@ -59,7 +59,7 @@
             this.btnStart.Location = new System.Drawing.Point(23, 356);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(324, 36);
-            this.btnStart.TabIndex = 18;
+            this.btnStart.TabIndex = 14;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = false;
             // 
@@ -90,7 +90,7 @@
             this.textBox2.Location = new System.Drawing.Point(23, 290);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(324, 35);
-            this.textBox2.TabIndex = 15;
+            this.textBox2.TabIndex = 4;
             this.textBox2.UseSystemPasswordChar = true;
             // 
             // label3
@@ -110,7 +110,7 @@
             this.textBox1.Location = new System.Drawing.Point(23, 211);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(324, 35);
-            this.textBox1.TabIndex = 16;
+            this.textBox1.TabIndex = 2;
             // 
             // txtIP
             // 
@@ -119,7 +119,7 @@
             this.txtIP.Location = new System.Drawing.Point(23, 132);
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(324, 35);
-            this.txtIP.TabIndex = 17;
+            this.txtIP.TabIndex = 3;
             // 
             // label2
             // 
@@ -162,19 +162,22 @@
             this.btnSignin.Location = new System.Drawing.Point(23, 352);
             this.btnSignin.Name = "btnSignin";
             this.btnSignin.Size = new System.Drawing.Size(324, 46);
-            this.btnSignin.TabIndex = 28;
+            this.btnSignin.TabIndex = 4;
             this.btnSignin.Text = "Signin";
             this.btnSignin.UseVisualStyleBackColor = false;
+            this.btnSignin.Click += new System.EventHandler(this.btnSignin_Click);
             // 
             // lblSignin
             // 
             this.lblSignin.AutoSize = true;
+            this.lblSignin.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSignin.Font = new System.Drawing.Font("Times New Roman", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
             this.lblSignin.Location = new System.Drawing.Point(88, 415);
             this.lblSignin.Name = "lblSignin";
             this.lblSignin.Size = new System.Drawing.Size(209, 21);
-            this.lblSignin.TabIndex = 21;
+            this.lblSignin.TabIndex = 5;
             this.lblSignin.Text = "Already have an account?";
+            this.lblSignin.Click += new System.EventHandler(this.lblSignin_Click);
             // 
             // label7
             // 
@@ -188,12 +191,11 @@
             // 
             // txtSigninPassword
             // 
-            this.txtSigninPassword.Enabled = false;
             this.txtSigninPassword.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtSigninPassword.Location = new System.Drawing.Point(23, 290);
             this.txtSigninPassword.Name = "txtSigninPassword";
             this.txtSigninPassword.Size = new System.Drawing.Size(324, 35);
-            this.txtSigninPassword.TabIndex = 25;
+            this.txtSigninPassword.TabIndex = 3;
             this.txtSigninPassword.UseSystemPasswordChar = true;
             // 
             // label8
@@ -208,21 +210,19 @@
             // 
             // txtSigninUsername
             // 
-            this.txtSigninUsername.Enabled = false;
             this.txtSigninUsername.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtSigninUsername.Location = new System.Drawing.Point(23, 211);
             this.txtSigninUsername.Name = "txtSigninUsername";
             this.txtSigninUsername.Size = new System.Drawing.Size(324, 35);
-            this.txtSigninUsername.TabIndex = 26;
+            this.txtSigninUsername.TabIndex = 1;
             // 
             // txtSigninIP
             // 
-            this.txtSigninIP.Enabled = false;
             this.txtSigninIP.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtSigninIP.Location = new System.Drawing.Point(23, 132);
             this.txtSigninIP.Name = "txtSigninIP";
             this.txtSigninIP.Size = new System.Drawing.Size(324, 35);
-            this.txtSigninIP.TabIndex = 27;
+            this.txtSigninIP.TabIndex = 0;
             // 
             // label9
             // 

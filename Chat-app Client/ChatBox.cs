@@ -39,6 +39,7 @@ namespace Chat_app_Client
             streamReader = new StreamReader(server.GetStream());
             streamWriter = new StreamWriter(server.GetStream());
 
+            this.Text = "Chat app - " + name;
             lblWelcome.Text = "Welcome, " + name;
 
             var mainThread = new Thread(() => receiveTheard());
