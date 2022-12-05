@@ -19,7 +19,7 @@ namespace Chat_app_Client
         {
             this.bufferFile = bufferFile;
             InitializeComponent();
-            this.Text = "Picture from " + bufferFile.sender;
+            this.Text = bufferFile.receiver + " - Picture from " + bufferFile.sender;
         }
 
         private void ImageView_Load(object sender, EventArgs e)

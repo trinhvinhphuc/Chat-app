@@ -147,65 +147,22 @@ namespace Chat_app_Server
                             case "CREATE_GROUP":
                                 if (infoJson.content != null)
                                 {
-                                    List<string> groupUser = new List<string>();
-                                    Group group = JsonSerializer.Deserialize<Group>(infoJson.content);
-
-                                    string[] values = group.members.Split(',');
-
-                                    for (int i = 0; i < values.Length; i++)
-                                    {
-                                        values[i] = values[i].Trim();
-                                        groupUser.Add(values[i]);
-                                    }
-
-                                    GROUP.Add(group.name, groupUser);
-
-                                    foreach (String key in CLIENT.Keys)
-                                    {
-                                        startupClient(CLIENT[key], key);
-                                    }
+                                    createGroup(infoJson);
                                 }
                                 break;
                             case "FILE":
                                 if (infoJson.content != null)
                                 {
-                                    FileMessage fileMessage = JsonSerializer.Deserialize<FileMessage>(infoJson.content);
-
-                                    try
-                                    {
-
-                                        int length = Convert.ToInt32(fileMessage.lenght);
-                                        byte[] buffer = new byte[length];
-                                        int received = 0;
-                                        int read = 0;
-                                        int size = 1024;
-                                        int remaining = 0;
-
-                                        // Read bytes from the client using the length sent from the client    
-                                        while (received < length)
-                                        {
-                                            remaining = length - received;
-                                            if (remaining < size)
-                                            {
-                                                size = remaining;
-                                            }
-
-                                            read = client.GetStream().Read(buffer, received, size);
-                                            received += read;
-                                        }
-
-                                        BufferFile bufferFile = new BufferFile(fileMessage.sender, fileMessage.receiver, buffer, fileMessage.extension);
-
-                                        String jsonString = JsonSerializer.Serialize(bufferFile);
-                                        Json json = new Json("FILE", jsonString);
-                                        //sendJson(json, client);
-                                        TcpClient tcpClient = CLIENT[fileMessage.receiver];
-                                        sendJson(json, tcpClient);
-                                    }
-                                    catch (Exception Ex)
-                                    {
-                                        Console.WriteLine(Ex.ToString());
-                                    }
+                                    reponseFile(infoJson, client);
+                                }
+                                break;
+                            case "LOGOUT":
+                                if (infoJson.content != null)
+                                {
+                                    CLIENT.Remove(infoJson.content);
+                                    AppendRichTextBox(infoJson.content + "logged out.");
+                                    threadActive = false;
+                                    client.Close();
                                 }
                                 break;
                         }
@@ -295,7 +252,10 @@ namespace Chat_app_Server
             if (messages != null && CLIENT.ContainsKey(messages.receiver))
             {
                 AppendRichTextBox(messages.sender + " to " + messages.receiver + ": " + messages.message);
+
                 TcpClient receiver = CLIENT[messages.receiver];
+                sendJson(infoJson, receiver);
+                receiver = CLIENT[messages.sender];
                 sendJson(infoJson, receiver);
             }
             else
@@ -312,6 +272,86 @@ namespace Chat_app_Server
                         }
                     }
                 }
+            }
+        }
+
+        private void createGroup(Json infoJson)
+        {
+            List<string> groupUser = new List<string>();
+            Group group = JsonSerializer.Deserialize<Group>(infoJson.content);
+
+            string[] values = group.members.Split(',');
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = values[i].Trim();
+                groupUser.Add(values[i]);
+            }
+
+            GROUP.Add(group.name, groupUser);
+
+            foreach (String key in CLIENT.Keys)
+            {
+                startupClient(CLIENT[key], key);
+            }
+        }
+
+        private void reponseFile(Json infoJson, TcpClient client)
+        {
+            FileMessage fileMessage = JsonSerializer.Deserialize<FileMessage>(infoJson.content);
+
+            try
+            {
+
+                int length = Convert.ToInt32(fileMessage.lenght);
+                byte[] buffer = new byte[length];
+                int received = 0;
+                int read = 0;
+                int size = 1024;
+                int remaining = 0;
+
+                // Read bytes from the client using the length sent from the client    
+                while (received < length)
+                {
+                    remaining = length - received;
+                    if (remaining < size)
+                    {
+                        size = remaining;
+                    }
+
+                    read = client.GetStream().Read(buffer, received, size);
+                    received += read;
+                }
+
+                BufferFile bufferFile = new BufferFile(fileMessage.sender, fileMessage.receiver, buffer, fileMessage.extension);
+
+                String jsonString = JsonSerializer.Serialize(bufferFile);
+                Json json = new Json("FILE", jsonString);
+
+                if (CLIENT.ContainsKey(fileMessage.receiver))
+                {
+
+                    TcpClient receiver = CLIENT[fileMessage.receiver];
+                    sendJson(json, receiver);
+                }
+                else
+                {
+                    if (GROUP.ContainsKey(fileMessage.receiver))
+                    {
+                        foreach (String user in GROUP[fileMessage.receiver])
+                        {
+                            if (CLIENT.ContainsKey(user))
+                            {
+                                TcpClient receiver = CLIENT[user];
+                                sendJson(json, receiver);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.ToString());
             }
         }
 

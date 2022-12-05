@@ -24,6 +24,7 @@ namespace Chat_app_Client
     {
         private TcpClient server;
         private String name;
+        private bool threadActive = true;
         private StreamReader streamReader;
         private StreamWriter streamWriter;
 
@@ -52,6 +53,12 @@ namespace Chat_app_Client
             if (txtMessage.Text == "" || txtReceiver.Text == "")
             {
                 MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtReceiver.Text == this.Name)
+            {
+                MessageBox.Show("Could not send message to yourself", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -119,7 +126,7 @@ namespace Chat_app_Client
                         Console.WriteLine("Sending file");
                         server.Client.SendFile(path + fName);
 
-                        AppendRichTextBox("File Message", "was sent.", "");
+                        AppendRichTextBox(this.name, message.receiver, "The file was sent.", "");
                     }
                 }
                 catch (Exception)
@@ -132,9 +139,17 @@ namespace Chat_app_Client
             dialogThread.IsBackground = true;
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Json json = new Json("LOGOUT", this.name);
+            sendJson(json);
+            new Thread(() => Application.Run(new Login())).Start();
+            threadActive = false;
+            this.Close();
+        }
+
         private void receiveTheard()
         {
-            bool threadActive = true;
             while(server != null && threadActive)
             {
                 try
@@ -168,7 +183,11 @@ namespace Chat_app_Client
                                 Messages message = JsonSerializer.Deserialize<Messages?>(infoJson.content);
                                 if (message != null)
                                 {
-                                    AppendRichTextBox(message.sender, message.message, "");
+                                    if (message.sender != this.name)
+                                    {
+                                        AppendRichTextBox(message.sender, message.receiver, message.message, "");
+                                    }
+                                    else AppendRichTextBox(message.sender, message.receiver, message.message, "");
                                 }
                             }
                             break;
@@ -180,9 +199,9 @@ namespace Chat_app_Client
 
                                 if (ImageExtensions.Contains(bufferFile.extension.ToUpper()))
                                 {
-                                    Application.Run(new ImageView(bufferFile));
+                                    new Thread(()=> Application.Run(new ImageView(bufferFile))).Start() ;
 
-                                    AppendRichTextBox(bufferFile.sender, "Shared the " + bufferFile.extension + " file in ", @Environment.CurrentDirectory);
+                                    AppendRichTextBox(bufferFile.sender, bufferFile.receiver, "Shared the " + bufferFile.extension + " file in ", @Environment.CurrentDirectory);
                                 }
                                 else
                                 {
@@ -209,7 +228,7 @@ namespace Chat_app_Client
                                         Console.WriteLine(Ex.ToString());
                                     }
 
-                                    AppendRichTextBox(bufferFile.sender, "Shared the " + bufferFile.extension + " file in ", @Environment.CurrentDirectory);
+                                    AppendRichTextBox(bufferFile.sender, bufferFile.receiver, "Shared the " + bufferFile.extension + " file in ", @Environment.CurrentDirectory);
                                 }
                             }
                             break;
@@ -223,18 +242,18 @@ namespace Chat_app_Client
             }
         }
 
-        private void AppendRichTextBox(string name, string message, string link)
+        private void AppendRichTextBox(string sender, string receiver, string message, string link)
         {
             rtbDialog.BeginInvoke(new MethodInvoker(() =>
             {
                 Font currentFont = rtbDialog.SelectionFont;
+
                 //Username
                 rtbDialog.SelectionStart = rtbDialog.TextLength;
                 rtbDialog.SelectionLength = 0;
-
                 rtbDialog.SelectionColor = Color.Red;
                 rtbDialog.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, FontStyle.Bold);
-                rtbDialog.AppendText(name);
+                rtbDialog.AppendText(sender + "<" + receiver + ">");
                 rtbDialog.SelectionColor = rtbDialog.ForeColor;
 
                 rtbDialog.AppendText(": ");
@@ -242,7 +261,6 @@ namespace Chat_app_Client
                 //Message
                 rtbDialog.SelectionStart = rtbDialog.TextLength;
                 rtbDialog.SelectionLength = 0;
-
                 rtbDialog.SelectionColor = Color.Green;
                 rtbDialog.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, FontStyle.Regular);
                 rtbDialog.AppendText(message);
@@ -253,11 +271,20 @@ namespace Chat_app_Client
                 //link
                 rtbDialog.SelectionStart = rtbDialog.TextLength;
                 rtbDialog.SelectionLength = 0;
-
                 rtbDialog.SelectionColor = Color.Blue;
                 rtbDialog.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, FontStyle.Underline);
                 rtbDialog.AppendText(" " + link);
                 rtbDialog.SelectionColor = rtbDialog.ForeColor;
+
+
+                rtbDialog.SelectionStart = rtbDialog.GetFirstCharIndexOfCurrentLine();
+                rtbDialog.SelectionLength = 0;
+
+                if (sender == this.name)
+                {
+                    rtbDialog.SelectionAlignment = HorizontalAlignment.Right;
+                }
+                else rtbDialog.SelectionAlignment = HorizontalAlignment.Left;
 
                 rtbDialog.AppendText(Environment.NewLine);
             }));
