@@ -28,17 +28,24 @@ namespace Chat_app_Client
                 return;
             }
 
-            ipe = new IPEndPoint(IPAddress.Parse(txtLoginIP.Text), 2009);           
-            server = new TcpClient();
+            try
+            {
+                ipe = new IPEndPoint(IPAddress.Parse(txtLoginIP.Text), 2009);
+                server = new TcpClient();
 
-            server.Connect(ipe);
+                server.Connect(ipe);
 
-            streamReader = new StreamReader(server.GetStream());
-            streamWriter = new StreamWriter(server.GetStream());
+                streamReader = new StreamReader(server.GetStream());
+                streamWriter = new StreamWriter(server.GetStream());
 
-            var threadLog = new Thread(new ThreadStart(waitForLoginFeedback));
-            threadLog.IsBackground = true;
-            threadLog.Start();
+                var threadLog = new Thread(new ThreadStart(waitForLoginFeedback));
+                threadLog.IsBackground = true;
+                threadLog.Start();
+            }
+            catch
+            {
+                MessageBox.Show("Cannot connect to server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }            
         }
 
         private void waitForLoginFeedback()

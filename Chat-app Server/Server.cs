@@ -384,5 +384,10 @@ namespace Chat_app_Server
                 btn.Enabled = enable;
             }));
         }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            active = false;
+        }
     }
 }
