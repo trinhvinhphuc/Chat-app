@@ -41,20 +41,20 @@
             this.txtReceiver = new System.Windows.Forms.TextBox();
             this.btnCreateGroup = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.btnLike = new System.Windows.Forms.PictureBox();
+            this.btnLove = new System.Windows.Forms.PictureBox();
+            this.btnLaugh = new System.Windows.Forms.PictureBox();
+            this.btnCry = new System.Windows.Forms.PictureBox();
+            this.btnDevil = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.tblUser)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tblGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnSend)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnLike)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnLove)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnLaugh)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCry)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnDevil)).BeginInit();
             this.SuspendLayout();
             // 
             // tblUser
@@ -194,65 +194,65 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // pictureBox1
+            // btnLike
             // 
-            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(179, 421);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(30, 30);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.btnPicture_Click);
+            this.btnLike.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLike.Image = ((System.Drawing.Image)(resources.GetObject("btnLike.Image")));
+            this.btnLike.Location = new System.Drawing.Point(179, 421);
+            this.btnLike.Name = "btnLike";
+            this.btnLike.Size = new System.Drawing.Size(30, 30);
+            this.btnLike.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.btnLike.TabIndex = 2;
+            this.btnLike.TabStop = false;
+            this.btnLike.Click += new System.EventHandler(this.btnLike_Click);
             // 
-            // pictureBox2
+            // btnLove
             // 
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(229, 421);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(30, 30);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 2;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.btnPicture_Click);
+            this.btnLove.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLove.Image = ((System.Drawing.Image)(resources.GetObject("btnLove.Image")));
+            this.btnLove.Location = new System.Drawing.Point(229, 421);
+            this.btnLove.Name = "btnLove";
+            this.btnLove.Size = new System.Drawing.Size(30, 30);
+            this.btnLove.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.btnLove.TabIndex = 2;
+            this.btnLove.TabStop = false;
+            this.btnLove.Click += new System.EventHandler(this.btnLove_Click);
             // 
-            // pictureBox3
+            // btnLaugh
             // 
-            this.pictureBox3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(279, 421);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(30, 30);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 2;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.btnPicture_Click);
+            this.btnLaugh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLaugh.Image = ((System.Drawing.Image)(resources.GetObject("btnLaugh.Image")));
+            this.btnLaugh.Location = new System.Drawing.Point(279, 421);
+            this.btnLaugh.Name = "btnLaugh";
+            this.btnLaugh.Size = new System.Drawing.Size(30, 30);
+            this.btnLaugh.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.btnLaugh.TabIndex = 2;
+            this.btnLaugh.TabStop = false;
+            this.btnLaugh.Click += new System.EventHandler(this.btnLaugh_Click);
             // 
-            // pictureBox4
+            // btnCry
             // 
-            this.pictureBox4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(329, 421);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(30, 30);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox4.TabIndex = 2;
-            this.pictureBox4.TabStop = false;
-            this.pictureBox4.Click += new System.EventHandler(this.btnPicture_Click);
+            this.btnCry.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCry.Image = ((System.Drawing.Image)(resources.GetObject("btnCry.Image")));
+            this.btnCry.Location = new System.Drawing.Point(329, 421);
+            this.btnCry.Name = "btnCry";
+            this.btnCry.Size = new System.Drawing.Size(30, 30);
+            this.btnCry.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.btnCry.TabIndex = 2;
+            this.btnCry.TabStop = false;
+            this.btnCry.Click += new System.EventHandler(this.btnCry_Click);
             // 
-            // pictureBox5
+            // btnDevil
             // 
-            this.pictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(379, 421);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(30, 30);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox5.TabIndex = 2;
-            this.pictureBox5.TabStop = false;
-            this.pictureBox5.Click += new System.EventHandler(this.btnPicture_Click);
+            this.btnDevil.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDevil.Image = ((System.Drawing.Image)(resources.GetObject("btnDevil.Image")));
+            this.btnDevil.Location = new System.Drawing.Point(379, 421);
+            this.btnDevil.Name = "btnDevil";
+            this.btnDevil.Size = new System.Drawing.Size(30, 30);
+            this.btnDevil.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.btnDevil.TabIndex = 2;
+            this.btnDevil.TabStop = false;
+            this.btnDevil.Click += new System.EventHandler(this.btnDevil_Click);
             // 
             // ChatBox
             // 
@@ -265,11 +265,11 @@
             this.Controls.Add(this.txtReceiver);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.btnSend);
-            this.Controls.Add(this.pictureBox5);
-            this.Controls.Add(this.pictureBox4);
-            this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.btnDevil);
+            this.Controls.Add(this.btnCry);
+            this.Controls.Add(this.btnLaugh);
+            this.Controls.Add(this.btnLove);
+            this.Controls.Add(this.btnLike);
             this.Controls.Add(this.btnPicture);
             this.Controls.Add(this.rtbDialog);
             this.Controls.Add(this.tblGroup);
@@ -281,11 +281,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.tblGroup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnPicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnSend)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnLike)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnLove)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnLaugh)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCry)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnDevil)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -305,10 +305,10 @@
         private Button button1;
         private DataGridViewButtonColumn Online;
         private DataGridViewButtonColumn Group;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
-        private PictureBox pictureBox3;
-        private PictureBox pictureBox4;
-        private PictureBox pictureBox5;
+        private PictureBox btnLike;
+        private PictureBox btnLove;
+        private PictureBox btnLaugh;
+        private PictureBox btnCry;
+        private PictureBox btnDevil;
     }
 }

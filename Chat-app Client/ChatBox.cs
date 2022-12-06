@@ -312,5 +312,116 @@ namespace Chat_app_Client
             streamWriter.WriteLine(S);
             streamWriter.Flush();
         }
+
+        private void btnLike_Click(object sender, EventArgs e)
+        {
+            
+            if (txtReceiver.Text == "")
+            {
+                MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtReceiver.Text == this.Name)
+            {
+                MessageBox.Show("Could not send message to yourself", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Messages messages = new Messages(this.name, txtReceiver.Text, "👍");
+            String messageJson = JsonSerializer.Serialize(messages);
+            Json json = new Json("MESSAGE", messageJson);
+            sendJson(json);
+
+            txtMessage.Clear();
+        }
+
+        private void btnLove_Click(object sender, EventArgs e)
+        {
+            if (txtReceiver.Text == "")
+            {
+                MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtReceiver.Text == this.Name)
+            {
+                MessageBox.Show("Could not send message to yourself", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Messages messages = new Messages(this.name, txtReceiver.Text, "🥰");
+            String messageJson = JsonSerializer.Serialize(messages);
+            Json json = new Json("MESSAGE", messageJson);
+            sendJson(json);
+
+            txtMessage.Clear();
+        }
+
+        private void btnLaugh_Click(object sender, EventArgs e)
+        {
+            if (txtReceiver.Text == "")
+            {
+                MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtReceiver.Text == this.Name)
+            {
+                MessageBox.Show("Could not send message to yourself", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Messages messages = new Messages(this.name, txtReceiver.Text, "🤣");
+            String messageJson = JsonSerializer.Serialize(messages);
+            Json json = new Json("MESSAGE", messageJson);
+            sendJson(json);
+
+            txtMessage.Clear();
+        }
+
+        private void btnCry_Click(object sender, EventArgs e)
+        {
+            if (txtReceiver.Text == "")
+            {
+                MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtReceiver.Text == this.Name)
+            {
+                MessageBox.Show("Could not send message to yourself", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Messages messages = new Messages(this.name, txtReceiver.Text, "😭");
+            String messageJson = JsonSerializer.Serialize(messages);
+            Json json = new Json("MESSAGE", messageJson);
+            sendJson(json);
+
+            txtMessage.Clear();
+        }
+
+        private void btnDevil_Click(object sender, EventArgs e)
+        {
+            if (txtReceiver.Text == "")
+            {
+                MessageBox.Show("Empty Fields", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtReceiver.Text == this.Name)
+            {
+                MessageBox.Show("Could not send message to yourself", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Messages messages = new Messages(this.name, txtReceiver.Text, "😈");
+            String messageJson = JsonSerializer.Serialize(messages);
+            Json json = new Json("MESSAGE", messageJson);
+            sendJson(json);
+
+            txtMessage.Clear();
+        }
     }
 }
