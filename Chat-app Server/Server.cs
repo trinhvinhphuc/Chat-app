@@ -387,7 +387,13 @@ namespace Chat_app_Server
 
         private void btnStop_Click(object sender, EventArgs e)
         {
+            if (CLIENT.Count() > 0)
+            {
+                MessageBox.Show("The server has " + CLIENT.Count + " user(s) logged in.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             active = false;
+            Environment.Exit(0);
         }
     }
 }
