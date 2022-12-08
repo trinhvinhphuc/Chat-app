@@ -14,6 +14,7 @@ namespace Chat_app_Client
         private TcpClient server;
         private StreamReader streamReader;
         private StreamWriter streamWriter;
+        private String name;
 
         public Login()
         {
@@ -35,6 +36,7 @@ namespace Chat_app_Client
 
                 server.Connect(ipe);
 
+                name = txtLoginUsername.Text;
                 streamReader = new StreamReader(server.GetStream());
                 streamWriter = new StreamWriter(server.GetStream());
 
@@ -68,7 +70,7 @@ namespace Chat_app_Client
                         case "LOGIN_FEEDBACK":
                             if (feedback.content == "TRUE")
                             {
-                                new Thread(() => Application.Run(new ChatBox(server, txtLoginUsername.Text))).Start();
+                                new Thread(() => Application.Run(new ChatBox(server, this.name))).Start();
                                 this.Invoke((MethodInvoker)delegate
                                 {
                                     this.Close();

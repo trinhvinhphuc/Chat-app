@@ -159,10 +159,10 @@ namespace Chat_app_Server
                             case "LOGOUT":
                                 if (infoJson.content != null)
                                 {
+                                    CLIENT[infoJson.content].Close();
                                     CLIENT.Remove(infoJson.content);
                                     AppendRichTextBox(infoJson.content + "logged out.");
                                     threadActive = false;
-                                    client.Close();
                                 }
                                 break;
                         }
@@ -171,7 +171,7 @@ namespace Chat_app_Server
             }
             catch
             {
-                client.Close();
+                //client.Close();
             }
         }
 
@@ -330,10 +330,10 @@ namespace Chat_app_Server
 
                 if (CLIENT.ContainsKey(fileMessage.receiver))
                 {
-
                     TcpClient receiver = CLIENT[fileMessage.receiver];
                     sendJson(json, receiver);
                 }
+
                 else
                 {
                     if (GROUP.ContainsKey(fileMessage.receiver))
