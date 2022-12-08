@@ -123,7 +123,6 @@ namespace Chat_app_Client
                         Json json = new Json("FILE", JsonSerializer.Serialize(message));
                         sendJson(json);
 
-                        Console.WriteLine("Sending file");
                         server.Client.SendFile(path + fName);
 
                         AppendRichTextBox(this.name, message.receiver, "The file was sent.", "");
