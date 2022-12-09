@@ -272,7 +272,7 @@ namespace Chat_app_Client
                 rtbDialog.SelectionLength = 0;
                 rtbDialog.SelectionColor = Color.Blue;
                 rtbDialog.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, FontStyle.Underline);
-                rtbDialog.AppendText(" " + link);
+                rtbDialog.AppendText(link);
                 rtbDialog.SelectionColor = rtbDialog.ForeColor;
 
 
@@ -421,6 +421,13 @@ namespace Chat_app_Client
             sendJson(json);
 
             txtMessage.Clear();
+        }
+
+        private void ChatBox_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Json json = new Json("LOGOUT", this.name);
+            sendJson(json);
+            threadActive = false;
         }
     }
 }

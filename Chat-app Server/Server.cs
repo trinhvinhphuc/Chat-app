@@ -161,8 +161,13 @@ namespace Chat_app_Server
                                 {
                                     CLIENT[infoJson.content].Close();
                                     CLIENT.Remove(infoJson.content);
-                                    AppendRichTextBox(infoJson.content + "logged out.");
+                                    AppendRichTextBox(infoJson.content + " logged out.");
                                     threadActive = false;
+
+                                    foreach (String key in CLIENT.Keys)
+                                    {
+                                        startupClient(CLIENT[key], key);
+                                    }
                                 }
                                 break;
                         }
