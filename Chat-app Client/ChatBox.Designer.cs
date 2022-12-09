@@ -276,6 +276,7 @@
             this.Controls.Add(this.tblUser);
             this.Name = "ChatBox";
             this.Text = "ChatBox";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChatBox_FormClosing);
             this.Load += new System.EventHandler(this.ChatBox_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tblUser)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tblGroup)).EndInit();
